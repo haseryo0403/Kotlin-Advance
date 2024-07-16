@@ -1,4 +1,4 @@
-package eu.tutorial.myrecipeapp
+package eu.tutorials.myrecipeapp
 
 import org.junit.Test
 
