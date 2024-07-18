@@ -1,4 +1,4 @@
-package eu.tutorial.locationapp.ui.theme
+package eu.tutorials.locationapp.ui.theme
 
 import android.app.Activity
 import android.os.Build

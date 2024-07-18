@@ -1,4 +1,4 @@
-package eu.tutorial.locationapp
+package eu.tutorials.locationapp
 
 import org.junit.Test
 

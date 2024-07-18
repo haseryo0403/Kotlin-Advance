@@ -1,8 +1,8 @@
-package eu.tutorial.locationapp
+package eu.tutorials.locationapp
 
-import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.Manifest
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,13 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import eu.tutorial.locationapp.ui.theme.LocationAppTheme
+import eu.tutorials.locationapp.ui.theme.LocationAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val viewModel:LocationViewModel = viewModel()
+            val viewModel: LocationViewModel = viewModel()
             LocationAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -43,67 +43,78 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp(viewModel: LocationViewModel{
+fun MyApp(viewModel: LocationViewModel){
     val context = LocalContext.current
     val locationUtils = LocationUtils(context)
     LocationDisplay(locationUtils = locationUtils, viewModel, context = context)
 }
+
 
 @Composable
 fun LocationDisplay(
     locationUtils: LocationUtils,
     viewModel: LocationViewModel,
     context: Context
-){
+) {
+    val location = viewModel.location.value
+
+    val address = location?.let{
+        locationUtils.reverseGeocodeLocation(location)
+    }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = {permissions->
+        contract = ActivityResultContracts.RequestMultiplePermissions() ,
+        onResult = { permissions ->
             if(permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
                 && permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true){
-                // I have access to location
-            } else {
-                // Ask for permission
-                // Do we need to show the reason or not
+                // I HAVE ACCESS to location
+
+                locationUtils.requestLocationUpdates(viewModel = viewModel)
+            }else{
                 val rationaleRequired = ActivityCompat.shouldShowRequestPermissionRationale(
                     context as MainActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) || ActivityCompat.shouldShowRequestPermissionRationale(
                     context as MainActivity,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
 
                 if(rationaleRequired){
-                    Toast.makeText(
-                        context,
-                        "Location Permission is required for this feature to work",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        context,
+                    Toast.makeText(context,
+                        "Location Permission is required for this feature to work", Toast.LENGTH_LONG)
+                        .show()
+                }else{
+                    Toast.makeText(context,
                         "Location Permission is required. Please enable it in the Android Settings",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.LENGTH_LONG)
+                        .show()
                 }
-
             }
         })
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Location not available")
+    Column(modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
+
+        if(location != null){
+            Text("Address: ${location.latitude} ${location.longitude} \n $address")
+        }else{
+            Text(text = "Location not available")
+        }
+
+
         Button(onClick = {
             if(locationUtils.hasLocationPermission(context)){
-                // Permission already granted, update the location
-            } else {
+                // Permission already granted update the location
+                locationUtils.requestLocationUpdates(viewModel)
+            }else{
                 // Request location permission
-                requestPermissionLauncher.launch(arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ))
+                requestPermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
             }
         }) {
             Text(text = "Get Location")

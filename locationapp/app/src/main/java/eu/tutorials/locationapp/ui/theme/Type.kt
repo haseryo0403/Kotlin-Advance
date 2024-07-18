@@ -1,4 +1,4 @@
-package eu.tutorial.locationapp.ui.theme
+package eu.tutorials.locationapp.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
