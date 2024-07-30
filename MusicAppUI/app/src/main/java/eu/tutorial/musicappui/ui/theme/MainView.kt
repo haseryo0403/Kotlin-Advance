@@ -54,6 +54,10 @@ fun MainView(){
     val navBackStackEntry by controller.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val dialogOpen = remember{
+        mutableStateOf(false)
+    }
+
     val currentScreen = remember{
         viewModel.currentScreen.value
     }
@@ -66,7 +70,7 @@ fun MainView(){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Home") },
+                title = { Text(text = title.value) },
                 navigationIcon = { IconButton(onClick = {
                     //Open the drawer
                     scope.launch {
@@ -88,6 +92,7 @@ fun MainView(){
                         }
                         if (item.dRoute == "add_account"){
                             // open dialog
+                            dialogOpen.value = true
                         } else {
                             controller.navigate(item.dRoute)
                             title.value = item.dTitle
@@ -98,6 +103,7 @@ fun MainView(){
         }
     ) {
         Navigation(navController = controller, viewModel = viewModel,pd = it)
+        AccountDialog(dialogOpen = dialogOpen)
     }
 }
 
@@ -136,12 +142,12 @@ fun Navigation(
 ){
     NavHost(
         navController = navController as NavHostController,
-        startDestination = Screen.DrawerScreen.AddAccount.route,
+        startDestination = Screen.DrawerScreen.Account.route,
         modifier = Modifier.padding(pd)
         ){
 
-        composable(Screen.DrawerScreen.AddAccount.route){
-
+        composable(Screen.DrawerScreen.Account.route){
+            AccountView()
         }
 
         composable(Screen.DrawerScreen.Subscription.route){
