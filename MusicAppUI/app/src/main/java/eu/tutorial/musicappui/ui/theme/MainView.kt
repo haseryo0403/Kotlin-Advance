@@ -151,7 +151,7 @@ fun Navigation(
         }
 
         composable(Screen.DrawerScreen.Subscription.route){
-            
+            Subscription()
         }
 
     }
