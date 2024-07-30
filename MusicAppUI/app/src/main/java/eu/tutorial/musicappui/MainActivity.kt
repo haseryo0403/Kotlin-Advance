@@ -1,4 +1,4 @@
-ヴァlうぃshぃstpackage eu.tutorial.myfirstapp
+package eu.tutorial.musicappui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,34 +10,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import eu.tutorial.myfirstapp.ui.theme.MyFirstAppTheme
+import eu.tutorial.musicappui.ui.theme.MainView
+import eu.tutorial.musicappui.ui.theme.MusicAppUITheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyFirstAppTheme {
+            MusicAppUITheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Ryo")
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MainView()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-            text = "Welcome $name!",
-            modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyFirstAppTheme {
-        Greeting("Android")
     }
 }
